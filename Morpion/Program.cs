@@ -14,16 +14,21 @@ namespace Morpion
 											//         DECLARATION DES VARIABLES GLOBALES
 											//*****************************************************
 
-			int choixMenu = 0;
-			bool[] typeDePartie = { false, false };     //La première case concerne la partie contre l'ordinateur
-														//la seconde case concerne la partie contre un autre joueur
-			char[,] tableauDuMorpion = new char[9,9];
 			bool tourDeLUtilisateur = true;
 
+			bool[] typeDePartie = { false, false };     //La première case concerne la partie contre l'ordinateur
+														//la seconde case concerne la partie contre un autre joueur
+
+			char deplacementChoisi = ' ';
 			char symboleJoueur1 = ' ';
 			char symboleJoueur2 = ' ';
 			char symboleOrdinateur = ' ';
-			
+
+			char[,] tableauDuMorpion = new char[3, 3];
+
+			int choixMenu = 0;
+			int[] positionDuCurseur = new int[2];
+
 
 			//A partir de cette fonction, on va connaître quel mode de jeu auquel le joueur veut jouer que ce soit grâce aux arguments
 			//dans l'invite de commande ou au choix d'une option dans le menu principal du jeu
@@ -41,17 +46,31 @@ namespace Morpion
 				if (tourDeLUtilisateur == true)
 				{
 					symboleJoueur1 = choixSymbole(tourDeLUtilisateur);
-					symboleOrdinateur = assignationDUnSymboleALautreJoueur(symboleJoueur1);
-					tourDeLUtilisateur = false;
+					symboleOrdinateur = AssignationDUnSymboleALautreJoueur(symboleJoueur1);
 				}
 
 				//Si c'est au tour de l'ordinateur de jouer
 				else
 				{
 					symboleOrdinateur = choixSymbole(tourDeLUtilisateur);
-					symboleJoueur1 = assignationDUnSymboleALautreJoueur(symboleOrdinateur);
-					tourDeLUtilisateur = true;
+					symboleJoueur1 = AssignationDUnSymboleALautreJoueur(symboleOrdinateur);
 				}
+
+				InitialisationTableauMorpion(tableauDuMorpion);
+				InitialisationDuCurseur(positionDuCurseur);
+
+
+				do
+				{
+					Console.Clear();
+					AffichageTableauMorpion(tableauDuMorpion, positionDuCurseur);
+					AfficherLeNomDuJoueurQuiDoitJouer(tourDeLUtilisateur);
+
+					deplacementChoisi = DeplacementDuCurseur(positionDuCurseur);
+				} while (deplacementChoisi != '5');
+
+				
+
 
 			}
 
@@ -200,7 +219,7 @@ namespace Morpion
 			return symbole;
 		}
 
-		static char assignationDUnSymboleALautreJoueur(char symboleJ1)
+		static char AssignationDUnSymboleALautreJoueur(char symboleJ1)
 		{
 			char symboleJ2 = ' ';
 
@@ -210,9 +229,147 @@ namespace Morpion
 			return symboleJ2;
 		}
 
-		static void affichageTableauMorption()
+		static void InitialisationDuCurseur(int[] positionDuCurseur)
 		{
+			positionDuCurseur[0] = 0;
+			positionDuCurseur[1] = 0;
+		}
 
+		static void InitialisationTableauMorpion(char[,] tableauDuMorpion)
+		{
+			int colonne, ligne;
+
+			//On initialise le tableau du morpion en insérant des espaces dans chaque case
+			for (ligne = 0; ligne < 3; ligne++)
+			{
+				for (colonne = 0; colonne < 3; colonne++)
+				{
+					tableauDuMorpion[ligne, colonne] = ' ';
+				}
+			}
+		}
+
+		static void AffichageTableauMorpion(char[,] tableauDuMorpion, int[] positionDuCurseur)
+		{
+			int colonne, ligne;
+			for(ligne=0; ligne<3; ligne++)
+			{
+				Console.WriteLine("\t\t\t\t -----------"); //Ligne de tirets dessinée entre chaque ligne
+				Console.Write("\t\t\t\t| ");
+				for(colonne=0; colonne<3; colonne++)
+				{
+					//Si on arrive sur la case où est positionné le curseur
+					if(positionDuCurseur[0] == ligne && positionDuCurseur[1] == colonne)
+					{
+						//Si la case est vide, on affiche le curseur par une étoile rouge
+						Console.ForegroundColor = ConsoleColor.Red;
+						if (tableauDuMorpion[ligne,colonne] == ' ')
+						{
+							Console.Write('*');
+						}
+
+						//Sinon on affiche le symbole de la case en rouge pour indiquer que le curseur est dessus
+						else
+						{
+							Console.Write(tableauDuMorpion[ligne, colonne]);
+						}
+					}
+
+					else
+					{
+						Console.ForegroundColor = ConsoleColor.DarkYellow;
+						Console.Write(tableauDuMorpion[ligne, colonne]); //Affichage du symbole
+					}
+
+					Console.ResetColor();
+					Console.Write(" | "); //Affichage du séparateur entre deux symboles sur une ligne
+				}
+				Console.WriteLine();
+			}
+			Console.WriteLine("\t\t\t\t -----------"); //Ligne dessinée à la fin du tableau
+		}
+
+		static void AfficherLeNomDuJoueurQuiDoitJouer(bool tourDeLutilisateur)
+		{
+			if (tourDeLutilisateur == true)
+			{
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("\n\t\t\tJoueur 1 : à toi de jouer !");
+				Console.ResetColor();
+			}
+
+			else
+			{
+				Console.ForegroundColor = ConsoleColor.DarkYellow;
+				Console.WriteLine("\n\t\t\tC'est au tour de l'ordinateur");
+				Console.ResetColor();
+			}
+
+		}
+
+		static char DeplacementDuCurseur(int[] positionDuCurseur)
+		{
+			char deplacement = ' ';
+			char toucheAppuyee = ' ';
+
+			//On affiche le fonctionnement du gameplay pour déplacer le curseur
+			Console.WriteLine("\t\t\tAppuyez sur : \n" +
+							  "\t\t\t2 : pour descendre\n" +
+							  "\t\t\t4 : aller à gauche\n" +
+							  "\t\t\t6 : aller à droite\n" +
+							  "\t\t\t8 : pour monter\n" +
+							  "\t\t\t5 : pour valider la position\n");
+
+			toucheAppuyee = Convert.ToChar(Console.ReadKey().KeyChar);
+			Console.ForegroundColor = ConsoleColor.Red; //On change la couleur du texte de la console en rouge au cas où on devra afficher un message d'erreur
+
+			switch (toucheAppuyee)
+			{
+				//Si le joueur décide de descendre
+				case '2':
+
+					//Si le curseur est déjà sur la dernière case tout en bas on affiche un message d'erreur, sinon on le déplace
+					if (positionDuCurseur[0] == 2) Console.WriteLine("Mouvement Impossible !");
+					else positionDuCurseur[0] += 1;
+
+					break;
+
+				//Si le joueur décide d'aller à gauche
+				case '4':
+
+					//Si le curseur est déjà sur la case tout à gauche on affiche un message d'erreur, sinon on le déplace
+					if (positionDuCurseur[1] == 0) Console.WriteLine("Mouvement Impossible !");
+					else positionDuCurseur[1] -= 1;
+
+					break;
+
+				//Si le joueur décide d'aller à droite
+				case '6':
+
+					//Si le curseur est déjà sur la case tout à droite on affiche un message d'erreur, sinon on le déplace
+					if (positionDuCurseur[1] == 2) Console.WriteLine("Mouvement Impossible !");
+					else positionDuCurseur[1] += 1;
+
+					break;
+
+				//Si le joueur décide d'aller en haut
+				case '8':
+					//Si le curseur est déjà tout en haut on affiche un message d'erreur, sinon on le déplace
+					if (positionDuCurseur[0] == 0) Console.WriteLine("Mouvement Impossible !");
+					else positionDuCurseur[0] -= 1;
+					break;
+				
+				//Si le joueur valide son mouvement
+				case '5':
+					break;
+
+				default:
+					break;
+			}
+
+			Console.ResetColor();
+
+			return deplacement;
 		}
 
 
