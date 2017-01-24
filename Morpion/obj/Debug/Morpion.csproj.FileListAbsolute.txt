@@ -4,3 +4,9 @@ U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application 
 U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\obj\Debug\Morpion.csprojResolveAssemblyReference.cache
 U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\obj\Debug\Morpion.exe
 U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\obj\Debug\Morpion.pdb
+C:\Users\34011-14-08\Projet_GIT\Morpion\Morpion\bin\Debug\Morpion.exe.config
+C:\Users\34011-14-08\Projet_GIT\Morpion\Morpion\obj\Debug\Morpion.exe
+C:\Users\34011-14-08\Projet_GIT\Morpion\Morpion\obj\Debug\Morpion.pdb
+C:\Users\34011-14-08\Projet_GIT\Morpion\Morpion\bin\Debug\Morpion.exe
+C:\Users\34011-14-08\Projet_GIT\Morpion\Morpion\bin\Debug\Morpion.pdb
+C:\Users\34011-14-08\Projet_GIT\Morpion\Morpion\obj\Debug\Morpion.csprojResolveAssemblyReference.cache

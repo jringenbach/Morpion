@@ -17,6 +17,26 @@ namespace Morpion
 			//A partir de cette fonction, on va connaître quel mode de jeu auquel le joueur veut jouer que ce soit grâce aux arguments
 			//dans l'invite de commande ou au choix d'une option dans le menu principal du jeu
 			MethodePermettantDeLancerLeModeDeJeuDesire(typeDePartie, choixMenu, args);
+			Console.Clear();
+
+
+											//**********************************************
+											//         PARTIE CONTRE L'ORDINATEUR
+											//**********************************************
+
+			if(typeDePartie[0] == true && typeDePartie[1] == false)
+			{
+				choixSymbole();
+			}
+
+											//**********************************************
+											//              JOUEUR VERSUS JOUEUR
+											//**********************************************
+
+			else if (typeDePartie[0] == false && typeDePartie[1] == true)
+			{
+
+			}
 
 		}
 
@@ -102,6 +122,40 @@ namespace Morpion
 
 
 			return choixMenu;
+		}
+
+		//*************************************************************
+		//              FONCTIONS DE LA PARTIE DE MORPION
+		//*************************************************************
+
+		static char choixSymbole()
+		{
+			char symbole = ' ';
+			bool symboleValide = false;
+
+			do
+			{
+				Console.Clear();
+
+				//Affichage du titre du menu de choix des symboles en rouge
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("\t\t --- 'O' ou 'X' ---");
+				Console.ResetColor();
+
+				//Affichage des explications en jaune
+				Console.ForegroundColor = ConsoleColor.Yellow;
+				Console.WriteLine("\n\t\t Ecrivez x ou o pour choisir votre camp");
+				Console.WriteLine("\t\t Votre choix : ");
+				Console.ResetColor();
+
+				symbole = Convert.ToChar(Console.ReadLine());
+				symboleValide = (symbole == 'x' || symbole == 'o' || symbole == 'X' || symbole == 'O') ? true : false;
+
+			} while (symboleValide == false);
+
+			Char.ToUpper(symbole); //Une fois le caractère choisi, on le passe en majuscule
+
+			return symbole;
 		}
 
 
