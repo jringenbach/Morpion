@@ -32,6 +32,7 @@ namespace Morpion
 			char[,] tableauDuMorpion = new char[3, 3];
 
 			int choixMenu = 0;
+			int partiesEgalite = 0;
 			int tourDeJeu = 1;
 			int victoireJoueur = 0;
 			int victoireOrdinateur = 0;
@@ -73,10 +74,12 @@ namespace Morpion
 						//Boucle des tours de jeu. A chaque nouveau tour de boucle, c'est qu'on a changé de joueur
 						do
 						{
-
 							InitialisationDuCurseur(positionDuCurseur);
 
-							// Quand c'est au tour du joueur
+										//**********************************************
+										//            TOUR DU JOUEUR
+										//**********************************************
+
 							if (tourDeLUtilisateur == true)
 							{
 								// Boucle dans laquelle le joueur est forcé de choisir une case valide
@@ -85,6 +88,7 @@ namespace Morpion
 									Console.Clear();
 									AffichageTableauMorpion(tableauDuMorpion, positionDuCurseur);
 									AfficherLeNomDuJoueurQuiDoitJouer(tourDeLUtilisateur);
+									AffichageStatistiquesDesJoueurs(victoireJoueur, victoireOrdinateur, partiesEgalite);
 
 									// Si c'est à l'utilisateur du programme de jouer
 									deplacementChoisi = DeplacementDuCurseur(positionDuCurseur);
@@ -99,10 +103,12 @@ namespace Morpion
 
 							} // Fin du tour du joueur
 
-							// Quand c'est au tour de l'ordinateur
+
+										//**********************************************
+										//            JEU DE L'ORDINATEUR
+										//**********************************************
 							else
 							{
-								Console.WriteLine("Tour de l'ordinateur");
 								if (tourDeJeu == 1) ActionDeLordinateurAuPremierTour(positionDuCurseur);
 								else if (tourDeJeu == 2) ActionDeLordinateurAuDeuxiemeTour(tableauDuMorpion, positionDuCurseur, symboleOrdinateur);
 								else ActionDeLordinateur(tableauDuMorpion, positionDuCurseur, symboleOrdinateur);
@@ -112,6 +118,7 @@ namespace Morpion
 							InsertionDuSymboleDansLeTableauDuMorpion(tableauDuMorpion, positionDuCurseur, tourDeLUtilisateur, symboleJoueur1);
 							tourDeLUtilisateur = ChangementDUtilisateur(tourDeLUtilisateur);
 
+							//A partir du 5ème tour de jeu, on peut commencer à faire des tests pour voir si quelqu'un a gagné
 							if (tourDeJeu == 5)
 							{
 								joueur1AGagne = TestVictoire(tableauDuMorpion, symboleJoueur1);
@@ -119,13 +126,17 @@ namespace Morpion
 								partieTerminee = (joueur1AGagne == true || ordinateurAGagne == true) ? true : false;
 							}
 
+							//Si on est au dernier tour de jeu et que personne n'a gagné
+							if (tourDeJeu == 9 && joueur1AGagne == false && ordinateurAGagne == false) partieTerminee = true;
+
 							tourDeJeu++;
 
-						} while (partieTerminee == false);
+						} while (partieTerminee == false); //Tant que personne n'a gagné, on continue de jouer
 
 						//Modifications de fin de partie
 						if (ordinateurAGagne) victoireOrdinateur++;
 						if (joueur1AGagne) victoireJoueur++;
+						if (tourDeJeu == 9 && joueur1AGagne == false && ordinateurAGagne == false) partiesEgalite++;
 
 						rejouer = DemanderSiLeJoueurVeutRejouer();
 
@@ -251,6 +262,15 @@ namespace Morpion
 				Console.ResetColor();
 			}
 
+		}
+
+		static void AffichageStatistiquesDesJoueurs(int joueur1AGagne, int ordinateurAGagne, int partiesEgalite)
+		{
+			Console.WriteLine("\n\t\t\t---- Statistiques ----");
+			Console.WriteLine("\t\t\t Victoires du joueur : " + joueur1AGagne);
+			Console.WriteLine("\t\t\t Victoires de l'ordinateur : " + ordinateurAGagne);
+			Console.WriteLine("\t\t\t Egalité : " + partiesEgalite);
+			Console.WriteLine();
 		}
 
 		static void AffichageTableauMorpion(char[,] tableauDuMorpion, int[] positionDuCurseur)
@@ -422,6 +442,27 @@ namespace Morpion
 			return toucheAppuyee;
 		}
 
+		static bool DemanderSiLeJoueurVeutRejouer()
+		{
+			bool rejouer = false;
+			char reponseSaisie = ' ';
+
+			do
+			{
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("Voulez-vous rejouer ?(y/n)");
+				Console.ResetColor();
+
+				reponseSaisie = Convert.ToChar(Console.ReadKey().KeyChar);
+
+			} while (reponseSaisie != 'y' && reponseSaisie != 'n');
+
+			if (reponseSaisie == 'y') rejouer = true;
+			else rejouer = false;
+
+			return rejouer;
+		}
+
 		static void InitialisationDuCurseur(int[] positionDuCurseur)
 		{
 			positionDuCurseur[0] = 0;
@@ -506,26 +547,6 @@ namespace Morpion
 			return victoire;
 		}
 
-		static bool DemanderSiLeJoueurVeutRejouer()
-		{
-			bool rejouer = false;
-			char reponseSaisie = ' ';
-
-			do
-			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("Voulez-vous rejouer ?(y/n)");
-				Console.ResetColor();
-
-				reponseSaisie = Convert.ToChar(Console.ReadKey().KeyChar);
-
-			} while (reponseSaisie != 'y' && reponseSaisie != 'n');
-
-			if (reponseSaisie == 'y') rejouer = true;
-			else rejouer = false;
-
-			return rejouer;
-		}
 
 		//*************************************************************
 		//                    JEU DE L'ORDINATEUR
@@ -580,26 +601,27 @@ namespace Morpion
 			//Si le joueur n'a pas joué au centre, alors l'ordinateur jouera au centre
 			else
 			{
-				positionDuCurseur[0] = 0;
-				positionDuCurseur[1] = 0;
+				positionDuCurseur[0] = 1;
+				positionDuCurseur[1] = 1;
 			}
 
 		}
 
 		static void ActionDeLordinateur(char[,] tableauDuMorpion, int[] positionDuCurseur, char symboleOrdinateur)
 		{
+			bool coupJoue = false;
 			// L'ORDINATEUR ANALYSE SI IL PEUT GAGNER
-			AnalyseDuTableauDuMorpion(tableauDuMorpion, positionDuCurseur, symboleOrdinateur);
+			coupJoue = AnalyseDuTableauDuMorpion(tableauDuMorpion, positionDuCurseur, symboleOrdinateur);
 
 
-			// L'ORDINATEUR ANALYSE SI LE JOUEUR PEUT GAGNER
-			AnalyseDuTableauDuMorpion(tableauDuMorpion, positionDuCurseur, symboleOppose(symboleOrdinateur));
+			// L'ORDINATEUR ANALYSE SI LE JOUEUR PEUT GAGNER si il n'a pas déjà joué un coup avant
+			if(coupJoue == false) coupJoue = AnalyseDuTableauDuMorpion(tableauDuMorpion, positionDuCurseur, symboleOppose(symboleOrdinateur));
 
 			// SINON IL JOUE AU HASARD
-			OrdinateurJoueAuHasard(tableauDuMorpion, positionDuCurseur);
+			if(coupJoue == false ) OrdinateurJoueAuHasard(tableauDuMorpion, positionDuCurseur);
 		}
 
-		static void AnalyseDuTableauDuMorpion(char[,] tableauDuMorpion, int[] positionDuCurseur, char symbole)
+		static bool AnalyseDuTableauDuMorpion(char[,] tableauDuMorpion, int[] positionDuCurseur, char symbole)
 		{
 			int ligne = 0, colonne = 0;
 			bool coupJoue = false;
@@ -607,21 +629,21 @@ namespace Morpion
 			//Analyse des lignes
 			for (ligne = 0; ligne < 3; ligne++)
 			{
-				if (tableauDuMorpion[ligne, 0] == symbole && tableauDuMorpion[ligne, 1] == symbole)
+				if (tableauDuMorpion[ligne, 0] == symbole && tableauDuMorpion[ligne, 1] == symbole && tableauDuMorpion[ligne,2] == ' ')
 				{
 					positionDuCurseur[0] = ligne;
 					positionDuCurseur[1] = 2;
 					coupJoue = true;
 				}
 
-				else if (tableauDuMorpion[ligne, 1] == symbole && tableauDuMorpion[ligne, 2] == symbole)
+				else if (tableauDuMorpion[ligne, 1] == symbole && tableauDuMorpion[ligne, 2] == symbole && tableauDuMorpion[ligne, 0] == ' ')
 				{
 					positionDuCurseur[0] = ligne;
 					positionDuCurseur[1] = 0;
 					coupJoue = true;
 				}
 
-				else if (tableauDuMorpion[ligne, 0] == symbole && tableauDuMorpion[ligne, 2] == symbole)
+				else if (tableauDuMorpion[ligne, 0] == symbole && tableauDuMorpion[ligne, 2] == symbole && tableauDuMorpion[ligne, 1] == ' ')
 				{
 					positionDuCurseur[0] = ligne;
 					positionDuCurseur[1] = 1;
@@ -635,21 +657,21 @@ namespace Morpion
 			{
 				for (colonne = 0; colonne < 3; colonne++)
 				{
-					if (tableauDuMorpion[0, colonne] == symbole && tableauDuMorpion[1, colonne] == symbole)
+					if (tableauDuMorpion[0, colonne] == symbole && tableauDuMorpion[1, colonne] == symbole && tableauDuMorpion[2, colonne] == ' ')
 					{
 						positionDuCurseur[0] = 2;
 						positionDuCurseur[1] = colonne;
 						coupJoue = true;
 					}
 
-					else if (tableauDuMorpion[1, colonne] == symbole && tableauDuMorpion[2, colonne] == symbole)
+					else if (tableauDuMorpion[1, colonne] == symbole && tableauDuMorpion[2, colonne] == symbole && tableauDuMorpion[0, colonne] == ' ')
 					{
 						positionDuCurseur[0] = 0;
 						positionDuCurseur[1] = colonne;
 						coupJoue = true;
 					}
 
-					else if (tableauDuMorpion[0, colonne] == symbole && tableauDuMorpion[2, colonne] == symbole)
+					else if (tableauDuMorpion[0, colonne] == symbole && tableauDuMorpion[2, colonne] == symbole && tableauDuMorpion[1, colonne] == ' ')
 					{
 						positionDuCurseur[0] = 1;
 						positionDuCurseur[1] = colonne;
@@ -663,40 +685,40 @@ namespace Morpion
 			if (coupJoue == false)
 			{
 
-				//Il joue la case haut gauche
-				if (tableauDuMorpion[2, 2] == symbole && tableauDuMorpion[1, 1] == symbole)
+				//Il joue la case haut gauche (si celle-ci est vide)
+				if (tableauDuMorpion[2, 2] == symbole && tableauDuMorpion[1, 1] == symbole && tableauDuMorpion[0, 0] == ' ')
 				{
 					positionDuCurseur[0] = 0;
 					positionDuCurseur[1] = 0;
 					coupJoue = true;
 				}
 
-				//Il joue la case haut droite
-				else if (tableauDuMorpion[2, 0] == symbole && tableauDuMorpion[1, 1] == symbole)
+				//Il joue la case haut droite (si celle-ci est vide)
+				else if (tableauDuMorpion[2, 0] == symbole && tableauDuMorpion[1, 1] == symbole && tableauDuMorpion[0, 2] == ' ')
 				{
 					positionDuCurseur[0] = 0;
 					positionDuCurseur[1] = 2;
 					coupJoue = true;
 				}
 
-				//Il joue la case bas gauche
-				else if (tableauDuMorpion[0, 2] == symbole && tableauDuMorpion[1, 1] == symbole)
+				//Il joue la case bas gauche (si celle-ci est vide)
+				else if (tableauDuMorpion[0, 2] == symbole && tableauDuMorpion[1, 1] == symbole && tableauDuMorpion[2, 0] == ' ')
 				{
 					positionDuCurseur[0] = 2;
 					positionDuCurseur[1] = 0;
 					coupJoue = true;
 				}
 
-				//Il joue la case bas droite
-				else if (tableauDuMorpion[0, 0] == symbole && tableauDuMorpion[1, 1] == symbole)
+				//Il joue la case bas droite (si celle-ci est vide)
+				else if (tableauDuMorpion[0, 0] == symbole && tableauDuMorpion[1, 1] == symbole && tableauDuMorpion[2, 2] == ' ')
 				{
 					positionDuCurseur[0] = 2;
 					positionDuCurseur[1] = 2;
 					coupJoue = true;
 				}
 
-				//Il joue la case du milieu
-				else if (tableauDuMorpion[0, 0] == symbole && tableauDuMorpion[2, 2] == symbole || tableauDuMorpion[0, 2] == symbole && tableauDuMorpion[2, 0] == symbole)
+				//Il joue la case du milieu (si celle-ci est vide)
+				else if (tableauDuMorpion[0, 0] == symbole && tableauDuMorpion[2, 2] == symbole && tableauDuMorpion[1, 1] == ' ' || tableauDuMorpion[0, 2] == symbole && tableauDuMorpion[2, 0] == symbole && tableauDuMorpion[1, 1] == ' ')
 				{
 					positionDuCurseur[0] = 1;
 					positionDuCurseur[1] = 1;
@@ -704,6 +726,8 @@ namespace Morpion
 				}
 
 			} //Fin de l'analyse des diagonales
+
+			return coupJoue;
 
 		}
 
