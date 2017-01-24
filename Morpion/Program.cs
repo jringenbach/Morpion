@@ -10,9 +10,20 @@ namespace Morpion
 	{
 		static void Main(string[] args)
 		{
+											//*****************************************************
+											//         DECLARATION DES VARIABLES GLOBALES
+											//*****************************************************
+
 			int choixMenu = 0;
 			bool[] typeDePartie = { false, false };     //La première case concerne la partie contre l'ordinateur
 														//la seconde case concerne la partie contre un autre joueur
+			char[,] tableauDuMorpion = new char[9,9];
+			bool tourDeLUtilisateur = true;
+
+			char symboleJoueur1 = ' ';
+			char symboleJoueur2 = ' ';
+			char symboleOrdinateur = ' ';
+			
 
 			//A partir de cette fonction, on va connaître quel mode de jeu auquel le joueur veut jouer que ce soit grâce aux arguments
 			//dans l'invite de commande ou au choix d'une option dans le menu principal du jeu
@@ -26,7 +37,22 @@ namespace Morpion
 
 			if(typeDePartie[0] == true && typeDePartie[1] == false)
 			{
-				choixSymbole();
+				//Si c'est au tour de l'utilisateur, il choisit son symbole et l'ordinateur aura l'autre symbole
+				if (tourDeLUtilisateur == true)
+				{
+					symboleJoueur1 = choixSymbole(tourDeLUtilisateur);
+					symboleOrdinateur = assignationDUnSymboleALautreJoueur(symboleJoueur1);
+					tourDeLUtilisateur = false;
+				}
+
+				//Si c'est au tour de l'ordinateur de jouer
+				else
+				{
+					symboleOrdinateur = choixSymbole(tourDeLUtilisateur);
+					symboleJoueur1 = assignationDUnSymboleALautreJoueur(symboleOrdinateur);
+					tourDeLUtilisateur = true;
+				}
+
 			}
 
 											//**********************************************
@@ -128,34 +154,65 @@ namespace Morpion
 		//              FONCTIONS DE LA PARTIE DE MORPION
 		//*************************************************************
 
-		static char choixSymbole()
+		static char choixSymbole(bool tourDeLUtilisateur)
 		{
 			char symbole = ' ';
 			bool symboleValide = false;
 
-			do
+			//Si c'est au tour du joueur de choisir son symbole
+			if(tourDeLUtilisateur == true)
 			{
-				Console.Clear();
+				do
+				{
+					Console.Clear();
 
-				//Affichage du titre du menu de choix des symboles en rouge
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("\t\t --- 'O' ou 'X' ---");
-				Console.ResetColor();
+					//Affichage du titre du menu de choix des symboles en rouge
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.WriteLine("\t\t\t --- 'O' ou 'X' ---");
+					Console.ResetColor();
 
-				//Affichage des explications en jaune
-				Console.ForegroundColor = ConsoleColor.Yellow;
-				Console.WriteLine("\n\t\t Ecrivez x ou o pour choisir votre camp");
-				Console.WriteLine("\t\t Votre choix : ");
-				Console.ResetColor();
+					//Affichage des explications en jaune
+					Console.ForegroundColor = ConsoleColor.Yellow;
+					Console.WriteLine("\n\t\t Ecrivez x ou o pour choisir votre camp");
+					Console.WriteLine("\t\t Votre choix : ");
+					Console.ResetColor();
 
-				symbole = Convert.ToChar(Console.ReadLine());
-				symboleValide = (symbole == 'x' || symbole == 'o' || symbole == 'X' || symbole == 'O') ? true : false;
+					symbole = Convert.ToChar(Console.ReadLine());
+					symboleValide = (symbole == 'x' || symbole == 'o' || symbole == 'X' || symbole == 'O') ? true : false;
 
-			} while (symboleValide == false);
+				} while (symboleValide == false);
 
-			Char.ToUpper(symbole); //Une fois le caractère choisi, on le passe en majuscule
+				symbole = Char.ToUpper(symbole); //Une fois le caractère choisi, on le passe en majuscule
+			}
+
+			else
+			{
+				Random nbAleatoire = new Random();
+				int nombreGenere = 0;
+				nombreGenere = nbAleatoire.Next(0, 1);
+
+				if(nombreGenere == 0) symbole = 'O';
+
+				else symbole = 'X';
+
+			}
 
 			return symbole;
+		}
+
+		static char assignationDUnSymboleALautreJoueur(char symboleJ1)
+		{
+			char symboleJ2 = ' ';
+
+			if (symboleJ1 == 'X') symboleJ2 = 'O';
+			else symboleJ2 = 'X';
+
+			return symboleJ2;
+		}
+
+		static void affichageTableauMorption()
+		{
+
 		}
 
 
