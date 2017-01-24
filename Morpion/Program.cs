@@ -96,6 +96,7 @@ namespace Morpion
 						Console.WriteLine("Tour de l'ordinateur");
 						if (tourDeJeu == 1) ActionDeLordinateurAuPremierTour(positionDuCurseur);
 						else if (tourDeJeu == 2) ActionDeLordinateurAuDeuxiemeTour(tableauDuMorpion, positionDuCurseur, symboleOrdinateur);
+						else ActionDeLordinateur(tableauDuMorpion, positionDuCurseur, symboleOrdinateur);
 					}
 
 					// Modifications de fin de tour
@@ -104,8 +105,6 @@ namespace Morpion
 					tourDeJeu++;
 
 				} while (partieTerminee == false);
-
-
 
 			}
 
@@ -459,7 +458,7 @@ namespace Morpion
 			Random aleatoire = new Random();
 			int nbAleatoire = aleatoire.Next(0, 3);
 
-			//Si le joueur a joué au centre, l'ordinateur jouera dans un coin au hasard
+			//Si le joueur a joué au centre au premier tour, l'ordinateur jouera dans un coin au hasard
 			if(tableauDuMorpion[1,1] == symboleOppose(symboleOrdinateur))
 			{
 				switch (nbAleatoire)
@@ -500,6 +499,181 @@ namespace Morpion
 				positionDuCurseur[1] = 0;
 			}
 
+		}
+
+		static void ActionDeLordinateur(char[,] tableauDuMorpion, int[] positionDuCurseur, char symboleOrdinateur)
+		{
+			// L'ORDINATEUR ANALYSE SI IL PEUT GAGNER
+			AnalyseDuTableauDuMorpion(tableauDuMorpion, positionDuCurseur, symboleOrdinateur);
+
+
+			// L'ORDINATEUR ANALYSE SI LE JOUEUR PEUT GAGNER
+			AnalyseDuTableauDuMorpion(tableauDuMorpion, positionDuCurseur, symboleOppose(symboleOrdinateur));
+
+			// SINON IL JOUE AU HASARD
+			OrdinateurJoueAuHasard(tableauDuMorpion, positionDuCurseur);
+		}
+
+		static void AnalyseDuTableauDuMorpion(char[,] tableauDuMorpion, int[] positionDuCurseur, char symbole)
+		{
+			int ligne = 0, colonne = 0;
+			bool coupJoue = false;
+
+			//Analyse des lignes
+			for (ligne=0; ligne<3; ligne++)
+			{
+				if (tableauDuMorpion[ligne, 0] == symbole && tableauDuMorpion[ligne, 1] == symbole)
+				{
+					positionDuCurseur[0] = ligne;
+					positionDuCurseur[1] = 2;
+					coupJoue = true;
+				}
+
+				else if (tableauDuMorpion[ligne, 1] == symbole && tableauDuMorpion[ligne, 2] == symbole)
+				{
+					positionDuCurseur[0] = ligne;
+					positionDuCurseur[1] = 0;
+					coupJoue = true;
+				}
+
+				else if (tableauDuMorpion[ligne, 0] == symbole && tableauDuMorpion[ligne, 2] == symbole)
+				{
+					positionDuCurseur[0] = ligne;
+					positionDuCurseur[1] = 1;
+					coupJoue = true;
+				}
+
+			} //Fin de l'analyse des lignes
+
+			//Si l'ordinateur n'a pas trouvé de coup à jouer, il analyse les colonnes
+			if (coupJoue == false)
+			{
+				for (colonne = 0; colonne < 3; colonne++)
+				{
+					if (tableauDuMorpion[0, colonne] == symbole && tableauDuMorpion[1, colonne] == symbole)
+					{
+						positionDuCurseur[0] = 2;
+						positionDuCurseur[1] = colonne;
+						coupJoue = true;
+					}
+
+					else if (tableauDuMorpion[1, colonne] == symbole && tableauDuMorpion[2, colonne] == symbole)
+					{
+						positionDuCurseur[0] = 0;
+						positionDuCurseur[1] = colonne;
+						coupJoue = true;
+					}
+
+					else if (tableauDuMorpion[0, colonne] == symbole && tableauDuMorpion[2, colonne] == symbole)
+					{
+						positionDuCurseur[0] = 1;
+						positionDuCurseur[1] = colonne;
+						coupJoue = true;
+					}
+
+				}
+			}//Fin de l'analyse des colonnes
+
+			//Si il n'a toujours rien trouvé, il analyse ses diagonales
+			if(coupJoue == false)
+			{
+
+				//Il joue la case haut gauche
+				if (tableauDuMorpion[2, 2] == symbole && tableauDuMorpion[1, 1] == symbole)
+				{
+					positionDuCurseur[0] = 0;
+					positionDuCurseur[1] = 0;
+					coupJoue = true;
+				}
+
+				//Il joue la case haut droite
+				else if (tableauDuMorpion[2, 0] == symbole && tableauDuMorpion[1, 1] == symbole)
+				{
+					positionDuCurseur[0] = 0;
+					positionDuCurseur[1] = 2;
+					coupJoue = true;
+				}
+
+				//Il joue la case bas gauche
+				else if (tableauDuMorpion[0, 2] == symbole && tableauDuMorpion[1, 1] == symbole)
+				{
+					positionDuCurseur[0] = 2;
+					positionDuCurseur[1] = 0;
+					coupJoue = true;
+				}
+
+				//Il joue la case bas droite
+				else if (tableauDuMorpion[0,0] == symbole && tableauDuMorpion[1,1] == symbole)
+				{
+					positionDuCurseur[0] = 2;
+					positionDuCurseur[1] = 2;
+					coupJoue = true;
+				}
+
+				//Il joue la case du milieu
+				else if (tableauDuMorpion[0, 0] == symbole && tableauDuMorpion[2, 2] == symbole || tableauDuMorpion[0, 2] == symbole && tableauDuMorpion[2, 0] == symbole)
+				{
+					positionDuCurseur[0] = 1;
+					positionDuCurseur[1] = 1;
+					coupJoue = true;
+				}
+
+			} //Fin de l'analyse des diagonales
+
+		}
+
+		static void OrdinateurJoueAuHasard(char[,] tableauDuMorpion, int[] positionDuCurseur)
+		{
+			Random hasard = new Random();
+			int nbAleatoire = hasard.Next(0, 9);
+			switch (nbAleatoire)
+			{
+				case 0:
+					positionDuCurseur[0] = 0;
+					positionDuCurseur[1] = 0;
+					break;
+
+				case 1:
+					positionDuCurseur[0] = 0;
+					positionDuCurseur[1] = 1;
+					break;
+
+				case 2:
+					positionDuCurseur[0] = 0;
+					positionDuCurseur[1] = 2;
+					break;
+
+				case 3:
+					positionDuCurseur[0] = 1;
+					positionDuCurseur[1] = 0;
+					break;
+
+				case 4:
+					positionDuCurseur[0] = 1;
+					positionDuCurseur[1] = 1;
+					break;
+
+				case 5:
+					positionDuCurseur[0] = 1;
+					positionDuCurseur[1] = 2;
+					break;
+
+				case 6:
+					positionDuCurseur[0] = 2;
+					positionDuCurseur[1] = 0;
+					break;
+
+				case 7:
+					positionDuCurseur[0] = 2;
+					positionDuCurseur[1] = 1;
+					break;
+
+				case 8:
+					positionDuCurseur[0] = 2;
+					positionDuCurseur[1] = 2;
+					break;
+
+			}
 		}
 
 		//*************************************
