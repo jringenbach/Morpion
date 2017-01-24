@@ -15,6 +15,7 @@ namespace Morpion
 											//*****************************************************
 
 			bool tourDeLUtilisateur = true;
+			bool caseValide = false;
 
 			bool[] typeDePartie = { false, false };     //La première case concerne la partie contre l'ordinateur
 														//la seconde case concerne la partie contre un autre joueur
@@ -59,7 +60,7 @@ namespace Morpion
 				InitialisationTableauMorpion(tableauDuMorpion);
 				InitialisationDuCurseur(positionDuCurseur);
 
-
+				// Boucle dans laquelle le joueur est forcé de choisir une case valide
 				do
 				{
 					Console.Clear();
@@ -67,7 +68,8 @@ namespace Morpion
 					AfficherLeNomDuJoueurQuiDoitJouer(tourDeLUtilisateur);
 
 					deplacementChoisi = DeplacementDuCurseur(positionDuCurseur);
-				} while (deplacementChoisi != '5');
+					caseValide = testDeLaValiditeDuDeplacement(tableauDuMorpion, positionDuCurseur, caseValide);
+				} while (deplacementChoisi != '5' || caseValide == false);
 
 				
 
@@ -314,10 +316,10 @@ namespace Morpion
 
 			//On affiche le fonctionnement du gameplay pour déplacer le curseur
 			Console.WriteLine("\t\t\tAppuyez sur : \n" +
-							  "\t\t\t2 : pour descendre\n" +
+							  "\n\t\t\t2 : pour descendre\n" +
 							  "\t\t\t4 : aller à gauche\n" +
 							  "\t\t\t6 : aller à droite\n" +
-							  "\t\t\t8 : pour monter\n" +
+							  "\t\t\t8 : pour monter\n\n" +
 							  "\t\t\t5 : pour valider la position\n");
 
 			toucheAppuyee = Convert.ToChar(Console.ReadKey().KeyChar);
@@ -370,6 +372,23 @@ namespace Morpion
 			Console.ResetColor();
 
 			return deplacement;
+		}
+
+		static bool testDeLaValiditeDuDeplacement(char[,] tableauDuMorpion, int[] positionDuCurseur, bool caseValide)
+		{
+			int ligne = positionDuCurseur[0];
+			int colonne = positionDuCurseur[1];
+
+			if (tableauDuMorpion[ligne, colonne] != ' ')
+			{
+				Console.ForegroundColor = ConsoleColor.Red; Console.WriteLine("Cette case est déjà prise !");
+				Console.ResetColor();
+				caseValide = false;
+			}
+
+			else caseValide = true;
+
+			return caseValide;
 		}
 
 
