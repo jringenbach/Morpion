@@ -1,0 +1,6 @@
+U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\bin\Debug\Morpion.exe.config
+U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\bin\Debug\Morpion.exe
+U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\bin\Debug\Morpion.pdb
+U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\obj\Debug\Morpion.csprojResolveAssemblyReference.cache
+U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\obj\Debug\Morpion.exe
+U:\34011-14-08\EVALUATIONS\Module 1 - Développer l'interface d'une application informatique\Morpion\Morpion\obj\Debug\Morpion.pdb
