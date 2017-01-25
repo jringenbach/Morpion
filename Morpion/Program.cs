@@ -119,7 +119,7 @@ namespace Morpion
 							tourDeLUtilisateur = ChangementDUtilisateur(tourDeLUtilisateur);
 
 							//A partir du 5ème tour de jeu, on peut commencer à faire des tests pour voir si quelqu'un a gagné
-							if (tourDeJeu == 5)
+							if (tourDeJeu >= 5)
 							{
 								joueur1AGagne = TestVictoire(tableauDuMorpion, symboleJoueur1);
 								ordinateurAGagne = TestVictoire(tableauDuMorpion, symboleOrdinateur);
@@ -737,9 +737,9 @@ namespace Morpion
 			bool caseVide = false;
 			int nbAleatoire = hasard.Next(0, 9);
 
-			nbAleatoire = hasard.Next(0, 9);
 			do
 			{
+				nbAleatoire = hasard.Next(0, 9);
 				switch (nbAleatoire)
 				{
 					case 0:
