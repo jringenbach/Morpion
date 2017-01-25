@@ -181,7 +181,7 @@ namespace Morpion
 		//    FONCTIONS CONCERNANT TOUS LES CHOIX DU MENU PRINCIPAL
 		//*************************************************************
 
-		static void choixDeLaPartie(bool[] typeDePartie, bool partieOrdinateur, bool partie2Joueurs)
+		static void ChoixDeLaPartie(bool[] typeDePartie, bool partieOrdinateur, bool partie2Joueurs)
 		{
 			typeDePartie[0] = partieOrdinateur;
 			typeDePartie[1] = partie2Joueurs;
@@ -198,12 +198,12 @@ namespace Morpion
 				{
 					//Si le joueur choisit le premier Menu, il jouera contre l'ordinateur
 					case 1:
-						choixDeLaPartie(typeDePartie, true, false);
+						ChoixDeLaPartie(typeDePartie, true, false);
 						break;
 
 					//Si le joueur choisit le deuxième Menu, il jouera contre un autre joueur (sur le même ordinateur)
 					case 2:
-						choixDeLaPartie(typeDePartie, false, true);
+						ChoixDeLaPartie(typeDePartie, false, true);
 						break;
 
 					default:
@@ -220,12 +220,12 @@ namespace Morpion
 				{
 					//Si l'argument est "computer", le joueur jouera contre l'ordinateur
 					case "computer":
-						choixDeLaPartie(typeDePartie, true, false);
+						ChoixDeLaPartie(typeDePartie, true, false);
 						break;
 
 					//Si l'argument est "2players", l'utilisateur lancera automatiquement le mode 2 joueurs
 					case "2players":
-						choixDeLaPartie(typeDePartie, false, true);
+						ChoixDeLaPartie(typeDePartie, false, true);
 						break;
 
 					default:
