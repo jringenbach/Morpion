@@ -393,7 +393,8 @@ namespace Morpion
 					Console.WriteLine("\t\t Votre choix : ");
 					Console.ResetColor();
 
-					symbole = Convert.ToChar(Console.ReadLine());
+					symbole = Convert.ToChar(Console.ReadKey().KeyChar);
+
 					symboleValide = (symbole == 'x' || symbole == 'o' || symbole == 'X' || symbole == 'O') ? true : false;
 
 				} while (symboleValide == false);
