@@ -75,6 +75,11 @@ namespace Morpion
 						ordinateurAGagne = false;
 						partieTerminee = false;
 						InitialisationTableauMorpion(tableauDuMorpion);
+						if (tourDeLUtilisateur == false)
+						{
+							symboleOrdinateur = OrdinateurChoisitUnSymboleAuHasard();
+							symboleJoueur1 = symboleOppose(symboleOrdinateur);
+						}
 
 						//Boucle des tours de jeu. A chaque nouveau tour de boucle, c'est qu'on a changé de joueur
 						do
@@ -526,6 +531,19 @@ namespace Morpion
 			//le symbole de l'ordinateur
 			if (tourDeLUtilisateur == true) tableauDuMorpion[ligne, colonne] = symboleJ1;
 			else tableauDuMorpion[ligne, colonne] = AssignationDUnSymboleALautreJoueur(symboleJ1);
+		}
+
+		static char OrdinateurChoisitUnSymboleAuHasard()
+		{
+			char symbole;
+			Random aleatoire = new Random();
+
+			int nbAleatoire = aleatoire.Next(0, 1);
+
+			if (nbAleatoire == 0) symbole = 'X';
+			else symbole = 'O';
+
+			return symbole;
 		}
 
 		static bool TestDeLaValiditeDuDeplacement(char[,] tableauDuMorpion, int[] positionDuCurseur, bool caseValide)
