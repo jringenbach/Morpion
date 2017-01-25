@@ -69,6 +69,11 @@ namespace Morpion
 					//Boucle des différentes parties jouées
 					do
 					{
+						//INITIALISATION DES VARIABLES DE LA PARTIE
+						tourDeJeu = 1;
+						joueur1AGagne = false;
+						ordinateurAGagne = false;
+						partieTerminee = false;
 						InitialisationTableauMorpion(tableauDuMorpion);
 
 						//Boucle des tours de jeu. A chaque nouveau tour de boucle, c'est qu'on a changé de joueur
@@ -133,14 +138,22 @@ namespace Morpion
 
 						} while (partieTerminee == false); //Tant que personne n'a gagné, on continue de jouer
 
-						//Modifications de fin de partie
+
+								//**********************************************
+								//                FIN DE PARTIE
+								//**********************************************
+
+
 						if (ordinateurAGagne) victoireOrdinateur++;
 						if (joueur1AGagne) victoireJoueur++;
-						if (tourDeJeu == 9 && joueur1AGagne == false && ordinateurAGagne == false) partiesEgalite++;
+						if (tourDeJeu == 10 && joueur1AGagne == false && ordinateurAGagne == false) partiesEgalite++;
 
+						Console.Clear();
+						AffichageTableauMorpion(tableauDuMorpion, positionDuCurseur);
+						AffichageMessageVictoire(joueur1AGagne, ordinateurAGagne);
 						rejouer = DemanderSiLeJoueurVeutRejouer();
 
-					} while (rejouer == true);
+					} while (rejouer == true); // Fin de la boucle d'une partie
 
 
 
@@ -262,6 +275,27 @@ namespace Morpion
 				Console.ResetColor();
 			}
 
+		}
+
+		static void AffichageMessageVictoire(bool j1AGagne, bool ordiAGagne)
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			if(j1AGagne == true)
+			{
+				Console.WriteLine("\t\tVOUS AVEZ GAGNE !!!");
+			}
+
+			else if(ordiAGagne == true)
+			{
+				Console.WriteLine("\t\tL'ORDINATEUR A GAGNE !!!");
+			}
+
+			else
+			{
+				Console.WriteLine("\t\tEGALITE !!!");
+			}
+			Console.ResetColor();
+			Console.WriteLine();
 		}
 
 		static void AffichageStatistiquesDesJoueurs(int joueur1AGagne, int ordinateurAGagne, int partiesEgalite)
